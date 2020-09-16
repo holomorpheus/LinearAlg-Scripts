@@ -14,49 +14,53 @@ cos, sin, pi = np.cos, np.sin, np.pi;
 # Defining the linear map
 
 # Scaling Matrix.
-a, b = 4/5, 2;
-B = np.matrix([[a, 0], [0, b]]);
+#a, b = 4/5, 2;
+#S = np.matrix([[a, 0], [0, b]]);
 
 # Rotation Matrix.
-theta = pi/6;
-C = np.matrix([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]]);
+#theta = pi/6;
+#R = np.matrix([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]]);
 
-A = C*B
+# Shear Matrix.
+A = np.matrix([[1, 1], [0, 1]]);
+
 #------------------------------------
-# Defining 4clovers
+# Defining 4flowers
 
-# How many clovers?
+# How many flowers?
 N = 6;
 
-# How many leaves in a clover? If L = 0 you will get a circle.
-L = 3;
+# How many petals in a flower? If L = 0 you will get a circle.
+L = 8;
+
+# How many gridpoints?
+anglegridsize = 256;
 
 # List of radii.
 rad = np.array([i for i in range(1,N+1)]);
 
-# Colors for the cloves.
-colormap = cm.get_cmap('spring', len(rad));
-colors = colormap(np.linspace(1,0,len(rad)));
+# Colors for the flowers.
+colormap = cm.get_cmap('viridis', len(rad));
+colors = colormap(np.linspace(.8,.2,len(rad)));
 
 # Define array of angles
-anglegridsize = 100;
 thetaspan = np.linspace(0, 2*pi, anglegridsize);
 
-# Define the unit clover
-rtheta = cos((L/2)*thetaspan)**2;
-xclover = rtheta*cos(thetaspan);
-yclover = rtheta*sin(thetaspan);
-unit_clover = np.matrix([xclover,yclover]);
+# Define the unit flower
+rtheta = np.abs(cos((L/2)*thetaspan))**.6;
+xflower = rtheta*cos(thetaspan);
+yflower = rtheta*sin(thetaspan);
+unit_flower = np.matrix([xflower,yflower]);
 
 # Define different circles in the domain.
-xyclovers = np.zeros((len(rad),2,anglegridsize));
+xyflowers = np.zeros((len(rad),2,anglegridsize));
 for i in range(len(rad)):
-    xyclovers[i,:,:] = rad[i]*unit_clover;
+    xyflowers[i,:,:] = rad[i]*unit_flower;
 
 # Define image of circles in target space.
-uvclovers = np.zeros((len(rad),2,anglegridsize));
+uvflowers = np.zeros((len(rad),2,anglegridsize));
 for i in range(len(rad)):
-    uvclovers[i,:,:] = A*xyclovers[i,:,:];
+    uvflowers[i,:,:] = A*xyflowers[i,:,:];
 
 #------------------------------------
 # Plotting
@@ -64,35 +68,38 @@ for i in range(len(rad)):
 # Scope
 scope  = rad[-1]+.5;
 
-# Plot domain.
-plt.figure(figsize=(5, 5), facecolor="w")
+# Define figure and axes objects.
+fig, ax = plt.subplots(1,2,figsize=(10, 5))
+
+# Plotting the domain.
+
 # Plot axes
-plt.axhline(y=0, color='k', alpha=0.5)
-plt.axvline(x=0, color='k',alpha=0.5)
-# Plot cloves
+ax[0].axhline(y=0, color='k', alpha=0.5)
+ax[0].axvline(x=0, color='k',alpha=0.5)
+ax[0].axhline(y=rad[-1], color='k',alpha=0.5)
+ax[0].axhline(y=-rad[-1], color='k',alpha=0.5)
+# Plot flowers
 for i in range(len(rad)):
-    plt.plot(xyclovers[i,0,:], xyclovers[i,1,:], color=colors[i], alpha=0.8)
-plt.grid(True)
-plt.axis("equal")
-plt.xlim([-scope, scope])
-plt.ylim([-scope, scope])
-plt.title("Original grid in x-y space")
+    ax[0].plot(xyflowers[i,0,:], xyflowers[i,1,:], color=colors[i], alpha=0.8)
+ax[0].grid(True)
+ax[0].axis("equal")
+ax[0].set_xlim([-scope, scope])
+ax[0].set_ylim([-scope, scope])
+ax[0].set_title("Original grid in x-y space")
 
+# Plotting the target space.
 
-# Plot target space.
-plt.figure(figsize=(5, 5), facecolor="w")
 # Plot axes
-plt.axhline(y=0, color='k', alpha=0.5)
-plt.axvline(x=0, color='k', alpha=0.5)
-# Plot cloves
+ax[1].axhline(y=0, color='k', alpha=0.5)
+ax[1].axvline(x=0, color='k', alpha=0.5)
+ax[1].axhline(y=rad[-1], color='k',alpha=0.5)
+ax[1].axhline(y=-rad[-1], color='k',alpha=0.5)
+# Plot flowers
 for i in range(len(rad)):
-    plt.plot(uvclovers[i,0,:], uvclovers[i,1,:], color=colors[i], alpha=0.8)
+    ax[1].plot(uvflowers[i,0,:], uvflowers[i,1,:], color=colors[i], alpha=0.8)
 
-plt.grid(True)
-plt.axis("equal")
-plt.xlim([-scope, scope])
-plt.ylim([-scope, scope])
-plt.title("Transformed grid in u-v space")
-
-#------------------------------------
-
+ax[1].grid(True)
+ax[1].axis("equal")
+ax[1].set_xlim([-scope, scope])
+ax[1].set_ylim([-scope, scope])
+ax[1].set_title("Transformed grid in u-v space")
