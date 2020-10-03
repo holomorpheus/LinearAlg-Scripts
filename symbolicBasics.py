@@ -10,8 +10,8 @@ Last Modified on Oct 1 2020
 # Import the SymPy library
 import sympy as sm
 
-# Import the matrixGenerator module
-import matrixGenerator as mg
+# # Import the matrixGenerator module
+# import matrixGenerator as mg
 
 # Shorthand for writing fractions
 rt = sm.Rational;
@@ -44,17 +44,18 @@ RM, pivots = M.rref()
 print("The reduced row echelon form of M is:")
 sm.pprint(RM);
 
-# Generate a random matrix
-""" First argument: rows
-    Second argument: columns
-    Third argument: rank
-    Fourth and fith arguments: Control how complicated the matrix will be """
-A = mg.generate(4,5,3,1,3);
+# # Generate a random matrix
+# """ First argument: rows
+#     Second argument: columns
+#     Third argument: rank
+#     Fourth and fith arguments: Control how complicated the matrix will be """
+# A = mg.generate(4,5,3,1,3);
 
 """ Some other cool stuff SymPy can do """
 
 # Define variable x
 x = sm.symbols('x')
+print("Here's a polynomial. If you use the console, you can print in LaTeX.")
 sm.pprint(x**2+3)
 
 # Shorthand for the exponential and square root functions, and constant π
@@ -64,9 +65,10 @@ pi = sm.pi;
 # Print Euler's identity
 i = sm.symbols('i');
 theta = sm.symbols('theta');
+print("Here's Euler's Identity")
 sm.pprint(sm.Eq(exp(i*theta),-1))
 
 # Integrate a function
-sm.pprint(sm.integrate(x**3, x))
+# sm.pprint(sm.integrate(x**3, x))
 
 
